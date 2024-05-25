@@ -1,7 +1,8 @@
+import json
 import sqlite3
+
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-import json
 from tabulate import tabulate
 
 
@@ -33,12 +34,12 @@ def database_get_columns_names(cursor):
     return [description[0] for description in cursor.description]
 
 
-def database_get(cursor, cryptocurrency_symbol: str):
+def database_get(cursor, cryptocurrency: str):
     cursor.execute('''
         select name, symbol, price, market_cap
         from cryptocurrency
-        where symbol like ?;
-        ''', ('%' + cryptocurrency_symbol + '%',))
+        where name like ? or symbol like ?;
+        ''', ('%' + cryptocurrency + '%', '%' + cryptocurrency + '%',))
     return cursor.fetchall()
 
 
